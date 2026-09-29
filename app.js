@@ -1,15 +1,15 @@
 import express from "express";
 const app = express();
-// import session from "express-session";
-// import passport from "passport";
+import session from "express-session";
+import passport from "./config/passport.js";
 import indexRouter from "./routes/indexRouter.js";
 import "dotenv/config";
 
 app.set("view engine", "ejs");
 
-// app.use(express.urlencoded({ extended: true }));
-// app.use(session({ secret: "secret", resave: false, saveUninitialized: false }));
-// app.use(passport.session());
+app.use(express.urlencoded({ extended: true }));
+app.use(session({ secret: "secret", resave: false, saveUninitialized: false }));
+app.use(passport.session());
 
 app.use("/", indexRouter);
 
