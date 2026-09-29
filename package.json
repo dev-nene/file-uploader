@@ -1,0 +1,37 @@
+{
+  "name": "file-uploader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dev-nene/file-uploader.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/dev-nene/file-uploader/issues"
+  },
+  "homepage": "https://github.com/dev-nene/file-uploader#readme",
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "^7.10.0",
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^18.0.4",
+    "ejs": "^6.0.1",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "express-validator": "^7.3.2",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
+    "pg": "^8.23.0"
+  },
+  "devDependencies": {
+    "prisma": "^7.10.0"
+  }
+}
