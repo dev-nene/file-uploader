@@ -3,7 +3,7 @@ import { prisma } from "../lib/prisma.js";
 import bcrypt from "bcryptjs";
 
 export async function renderHomepage(req, res) {
-  res.render("index");
+  res.render("index", { user: req.user });
 }
 
 export async function renderRegister(req, res) {
@@ -40,4 +40,15 @@ export async function registerUser(req, res, next) {
     }
     return next(error);
   }
+}
+
+export async function renderLogin(req, res) {
+  res.render("login", { errors: [], user: {} });
+}
+
+export async function logoutUser(req, res, next) {
+  req.logout((err) => {
+    if (err) return next(err);
+    res.redirect("/");
+  });
 }

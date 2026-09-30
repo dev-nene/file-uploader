@@ -5,6 +5,19 @@
   <body>
     <h1>File Uploader</h1>
 
-    <a href="/register">Register</a>
+    <% if (locals.user) {%>
+      <h2>Welcome back <%=user.name%></h2>
+      <p>Account: <%=user.email%></p>
+      
+      <form action="/logout" method="POST">
+        <button type="submit">Log out</button>
+      </form>
+    <% }  else { %>
+      <h2>Please register or log in</h2>
+      <a href="/register">Register</a>
+      <br>
+      <a href="/login">Log in</a>
+    <% } %>
+
   </body>
 </html>
