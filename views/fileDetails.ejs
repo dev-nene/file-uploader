@@ -1,0 +1,13 @@
+<html>
+  <head>
+    <title>File Details</title>
+  </head>
+  <body>
+    <h1><%=file.name%></h1>
+
+    <p>Size: <%= (file.size / 1024).toFixed(1) %> KiB</p>
+    <p><%=file.uploadedAt.toLocaleString() %></p>
+
+    <a href="/files/<%= file.id %>/download">Download</a>
+  </body>
+</html>

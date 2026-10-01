@@ -23,6 +23,7 @@
           <div>
             <p><%=files[i].name %> - Size: <%= (files[i].size / 1024).toFixed(1) %> KiB </p>
             <p><%=files[i].uploadedAt.toLocaleString() %></p>
+            <a href="/files/<%=files[i].id%>">Details</a>
           </div>
         <% } %>
       <% } %>

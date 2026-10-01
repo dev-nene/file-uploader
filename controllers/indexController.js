@@ -98,3 +98,31 @@ export async function uploadFile(req, res) {
   }
   return res.send("File uploaded");
 }
+
+export async function renderFileDetails(req, res) {
+  const fileId = Number(req.params.id);
+  if (!Number.isInteger(fileId) || fileId <= 0) {
+    return res.status(400).send("Invalid file ID");
+  }
+  const file = await prisma.file.findFirst({
+    where: { id: fileId, ownerId: req.user.id },
+  });
+  if (!file) {
+    return res.status(404).send("File does not exist");
+  }
+  res.render("fileDetails", { file });
+}
+
+export async function downloadFile(req, res) {
+  const fileId = Number(req.params.id);
+  if (!Number.isInteger(fileId) || fileId <= 0) {
+    return res.status(400).send("Invalid file ID");
+  }
+  const file = await prisma.file.findFirst({
+    where: { id: fileId, ownerId: req.user.id },
+  });
+  if (!file) {
+    return res.status(404).send("File does not exist");
+  }
+  res.download(file.path, file.name);
+}

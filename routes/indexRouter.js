@@ -1,7 +1,9 @@
 import { Router } from "express";
 import {
+  downloadFile,
   logoutUser,
   registerUser,
+  renderFileDetails,
   renderHomepage,
   renderLogin,
   renderRegister,
@@ -38,5 +40,8 @@ indexRouter.post("/logout", logoutUser);
 
 indexRouter.get("/upload", requireLogin, renderUpload);
 indexRouter.post("/upload", requireLogin, upload.single("file"), uploadFile);
+
+indexRouter.get("/files/:id", requireLogin, renderFileDetails);
+indexRouter.get("/files/:id/download", requireLogin, downloadFile);
 
 export default indexRouter;
