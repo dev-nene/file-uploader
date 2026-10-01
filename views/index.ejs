@@ -8,10 +8,25 @@
     <% if (locals.user) {%>
       <h2>Welcome back <%=user.name%></h2>
       <p>Account: <%=user.email%></p>
+
+      <a href="/upload">Upload file</a>
+    
       
       <form action="/logout" method="POST">
         <button type="submit">Log out</button>
       </form>
+      
+      <% if (locals.files.length === 0) { %> 
+        <p>No files uploaded yet</p>
+      <% } else { %>
+        <% for (let i = 0; i < files.length; i++) { %> 
+          <div>
+            <p><%=files[i].name %> - Size: <%= (files[i].size / 1024).toFixed(1) %> KiB </p>
+            <p><%=files[i].uploadedAt.toLocaleString() %></p>
+          </div>
+        <% } %>
+      <% } %>
+      
     <% }  else { %>
       <h2>Please register or log in</h2>
       <a href="/register">Register</a>

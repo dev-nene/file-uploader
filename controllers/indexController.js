@@ -1,9 +1,17 @@
 import { matchedData, validationResult } from "express-validator";
 import { prisma } from "../lib/prisma.js";
 import bcrypt from "bcryptjs";
+import { unlink } from "node:fs/promises";
 
 export async function renderHomepage(req, res) {
-  res.render("index", { user: req.user });
+  let files = [];
+  if (req.user) {
+    files = await prisma.file.findMany({
+      where: { ownerId: req.user.id },
+      orderBy: { uploadedAt: "desc" },
+    });
+  }
+  res.render("index", { user: req.user, files });
 }
 
 export async function renderRegister(req, res) {
@@ -51,4 +59,42 @@ export async function logoutUser(req, res, next) {
     if (err) return next(err);
     res.redirect("/");
   });
+}
+
+export function requireLogin(req, res, next) {
+  if (!req.isAuthenticated()) {
+    return res.redirect("/login");
+  }
+  return next();
+}
+
+export function renderUpload(req, res) {
+  res.render("upload", { errors: [] });
+}
+
+export async function uploadFile(req, res) {
+  if (!req.file) {
+    return res
+      .status(400)
+      .render("upload", { errors: [{ msg: "File is missing" }] });
+  }
+
+  try {
+    await prisma.file.create({
+      data: {
+        name: req.file.originalname,
+        path: req.file.path,
+        size: req.file.size,
+        ownerId: req.user.id,
+      },
+    });
+  } catch (error) {
+    try {
+      await unlink(req.file.path);
+    } catch (cleanupError) {
+      console.log("Could not delete uploaded file", cleanupError);
+    }
+    return next(error);
+  }
+  return res.send("File uploaded");
 }

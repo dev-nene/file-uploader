@@ -17,6 +17,7 @@ model User {
   email         String  @unique
   name          String?
   password_hash String
+  files         File[]
 }
 
 model Session {
@@ -24,4 +25,14 @@ model Session {
   sid       String   @unique
   data      String
   expiresAt DateTime
+}
+
+model File {
+  id         Int      @id @default(autoincrement())
+  name       String
+  path       String
+  size       Int
+  uploadedAt DateTime @default(now())
+  owner      User     @relation(fields: [ownerId], references: [id])
+  ownerId   Int
 }

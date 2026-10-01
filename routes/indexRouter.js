@@ -5,9 +5,18 @@ import {
   renderHomepage,
   renderLogin,
   renderRegister,
+  renderUpload,
+  requireLogin,
+  uploadFile,
 } from "../controllers/indexController.js";
 import validateUser from "../validators/userValidator.js";
 import passport from "../config/passport.js";
+import multer from "multer";
+
+const upload = multer({
+  dest: "uploads/",
+  limits: { fileSize: 5 * 1024 * 1024 },
+});
 
 const indexRouter = Router();
 
@@ -26,5 +35,8 @@ indexRouter.post(
   }),
 );
 indexRouter.post("/logout", logoutUser);
+
+indexRouter.get("/upload", requireLogin, renderUpload);
+indexRouter.post("/upload", requireLogin, upload.single("file"), uploadFile);
 
 export default indexRouter;

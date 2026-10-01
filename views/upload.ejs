@@ -1,0 +1,21 @@
+<html>
+  <head>
+    <title>Upload</title>
+  </head>
+  <body>
+    <h1>Upload you file</h1>
+
+    <% if (errors && errors.length > 0) { %>
+      <ul>
+        <% errors.forEach((error) => { %>
+          <li><%= error.msg %></li>
+        <% }) %>
+      </ul>
+    <% } %>
+    
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+      <input type="file" name="file" id="file" />
+      <button>Upload</button>
+    </form>
+  </body>
+</html>
