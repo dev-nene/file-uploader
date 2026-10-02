@@ -8,7 +8,7 @@ export async function renderHomepage(req, res) {
   let folders = [];
   if (req.user) {
     files = await prisma.file.findMany({
-      where: { ownerId: req.user.id },
+      where: { ownerId: req.user.id, folderId: null },
       orderBy: { uploadedAt: "desc" },
     });
     folders = await prisma.folder.findMany({
@@ -151,4 +151,22 @@ export async function createFolder(req, res) {
     },
   });
   res.redirect("/");
+}
+
+export async function renderFolderDetails(req, res) {
+  const folderId = Number(req.params.id);
+  if (!Number.isInteger(folderId) || folderId <= 0) {
+    return res.status(400).send("Invalid folder Id");
+  }
+
+  const folder = await prisma.folder.findFirst({
+    where: { id: folderId, ownerId: req.user.id },
+    include: { files: { orderBy: { uploadedAt: "desc" } } },
+  });
+
+  if (!folder) {
+    return res.status(404).send("Folder does not exist");
+  }
+
+  res.render("folderDetails", { folder });
 }

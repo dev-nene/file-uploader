@@ -5,6 +5,7 @@ import {
   logoutUser,
   registerUser,
   renderFileDetails,
+  renderFolderDetails,
   renderHomepage,
   renderLogin,
   renderNewFolderForm,
@@ -49,5 +50,6 @@ indexRouter.get("/files/:id/download", requireLogin, downloadFile);
 
 indexRouter.get("/folders/new", requireLogin, renderNewFolderForm);
 indexRouter.post("/folders", requireLogin, folderValidator, createFolder);
+indexRouter.get("/folders/:id", requireLogin, renderFolderDetails);
 
 export default indexRouter;

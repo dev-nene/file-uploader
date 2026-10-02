@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <title>Folder Details</title>
+  </head>
+  <body>
+    <h1><%=folder.name%></h1>
+
+    <p><%=folder.createdAt.toLocaleString() %></p>
+
+    <% if (folder.files.length === 0) { %> 
+        <p>No files uploaded yet</p>
+      <% } else { %>
+        <% for (let i = 0; i < folder.files.length; i++) { %> 
+          <div>
+            <p><%=folder.files[i].name %> - Size: <%= (folder.files[i].size / 1024).toFixed(1) %> KiB </p>
+            <p><%=folder.files[i].uploadedAt.toLocaleString() %></p>
+            <a href="/files/<%=folder.files[i].id%>">Details</a>
+          </div>
+        <% } %>
+      <% } %>
+
+
+  </body>
+</html>
