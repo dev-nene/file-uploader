@@ -13,11 +13,12 @@ datasource db {
 }
 
 model User {
-  id            Int     @id @default(autoincrement())
-  email         String  @unique
+  id            Int      @id @default(autoincrement())
+  email         String   @unique
   name          String?
   password_hash String
   files         File[]
+  folders       Folder[]
 }
 
 model Session {
@@ -34,5 +35,16 @@ model File {
   size       Int
   uploadedAt DateTime @default(now())
   owner      User     @relation(fields: [ownerId], references: [id])
+  ownerId    Int
+  folder     Folder?  @relation(fields: [folderId], references: [id])
+  folderId   Int?
+}
+
+model Folder {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  owner     User     @relation(fields: [ownerId], references: [id])
   ownerId   Int
+  files     File[]
 }

@@ -1,11 +1,13 @@
 import { Router } from "express";
 import {
+  createFolder,
   downloadFile,
   logoutUser,
   registerUser,
   renderFileDetails,
   renderHomepage,
   renderLogin,
+  renderNewFolderForm,
   renderRegister,
   renderUpload,
   requireLogin,
@@ -14,6 +16,7 @@ import {
 import validateUser from "../validators/userValidator.js";
 import passport from "../config/passport.js";
 import multer from "multer";
+import folderValidator from "../validators/folderValidator.js";
 
 const upload = multer({
   dest: "uploads/",
@@ -43,5 +46,8 @@ indexRouter.post("/upload", requireLogin, upload.single("file"), uploadFile);
 
 indexRouter.get("/files/:id", requireLogin, renderFileDetails);
 indexRouter.get("/files/:id/download", requireLogin, downloadFile);
+
+indexRouter.get("/folders/new", requireLogin, renderNewFolderForm);
+indexRouter.post("/folders", requireLogin, folderValidator, createFolder);
 
 export default indexRouter;

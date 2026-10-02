@@ -15,6 +15,21 @@
       <form action="/logout" method="POST">
         <button type="submit">Log out</button>
       </form>
+
+      <a href="/folders/new">Create folder</a>
+
+      <% if (locals.folders.length === 0) { %> 
+        <p>No folders created yet</p>
+      <% } else { %>
+        <% for (let i = 0; i < folders.length; i++) { %> 
+          <div>
+            <p><%=folders[i].name %> </p>
+            <p><%=folders[i].createdAt.toLocaleString() %></p>
+            <a href="/folders/<%=folders[i].id%>">Details</a>
+          </div>
+        <% } %>
+      <% } %>
+
       
       <% if (locals.files.length === 0) { %> 
         <p>No files uploaded yet</p>

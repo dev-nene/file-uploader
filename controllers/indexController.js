@@ -5,13 +5,19 @@ import { unlink } from "node:fs/promises";
 
 export async function renderHomepage(req, res) {
   let files = [];
+  let folders = [];
   if (req.user) {
     files = await prisma.file.findMany({
       where: { ownerId: req.user.id },
       orderBy: { uploadedAt: "desc" },
     });
+    folders = await prisma.folder.findMany({
+      where: { ownerId: req.user.id },
+      orderBy: { createdAt: "desc" },
+    });
   }
-  res.render("index", { user: req.user, files });
+
+  res.render("index", { user: req.user, files, folders });
 }
 
 export async function renderRegister(req, res) {
@@ -125,4 +131,24 @@ export async function downloadFile(req, res) {
     return res.status(404).send("File does not exist");
   }
   res.download(file.path, file.name);
+}
+
+export async function renderNewFolderForm(req, res) {
+  res.render("folder-form", { errors: [] });
+}
+
+export async function createFolder(req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).render("folder-form", { errors: errors.array() });
+  }
+
+  const folderData = matchedData(req);
+  await prisma.folder.create({
+    data: {
+      name: folderData.name,
+      ownerId: req.user.id,
+    },
+  });
+  res.redirect("/");
 }
