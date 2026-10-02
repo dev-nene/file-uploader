@@ -168,5 +168,54 @@ export async function renderFolderDetails(req, res) {
     return res.status(404).send("Folder does not exist");
   }
 
-  res.render("folderDetails", { folder });
+  res.render("folderDetails", { folder, errors: [] });
+}
+
+export async function checkFolderOwnership(req, res, next) {
+  const folderId = Number(req.params.id);
+  if (!Number.isInteger(folderId) || folderId <= 0) {
+    return res.status(400).send("Invalid folder Id");
+  }
+
+  const folder = await prisma.folder.findFirst({
+    where: { id: folderId, ownerId: req.user.id },
+    include: { files: { orderBy: { uploadedAt: "desc" } } },
+  });
+
+  if (!folder) {
+    return res.status(404).send("You dont have access to this folder");
+  }
+
+  req.folder = folder;
+  next();
+}
+
+export async function uploadFileToFolder(req, res, next) {
+  if (!req.file) {
+    return res.status(400).render("folderDetails", {
+      folder: req.folder,
+      errors: [{ msg: "File is missing" }],
+    });
+  }
+
+  try {
+    await prisma.file.create({
+      data: {
+        name: req.file.originalname,
+        path: req.file.path,
+        size: req.file.size,
+        ownerId: req.user.id,
+        folderId: req.folder.id,
+      },
+    });
+  } catch (error) {
+    try {
+      await unlink(req.file.path);
+    } catch (cleanupError) {
+      console.error("Could not delete uploaded file to folder", cleanupError);
+    }
+    return next(error);
+  }
+
+  return res.redirect(`/folders/${req.folder.id}`);
 }

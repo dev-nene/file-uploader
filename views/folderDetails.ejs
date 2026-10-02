@@ -7,6 +7,20 @@
 
     <p><%=folder.createdAt.toLocaleString() %></p>
 
+    <% if (errors && errors.length > 0) { %>
+      <ul>
+        <% errors.forEach((error) => { %>
+          <li><%= error.msg %></li>
+        <% }) %>
+      </ul>
+    <% } %>
+
+    <form action="/folders/<%=folder.id%>/upload" method="POST" enctype="multipart/form-data">
+      <input type="file" name="file" id="file" />
+      <button>Upload</button>
+    </form>
+
+
     <% if (folder.files.length === 0) { %> 
         <p>No files uploaded yet</p>
       <% } else { %>

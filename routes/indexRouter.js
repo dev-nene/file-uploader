@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  checkFolderOwnership,
   createFolder,
   downloadFile,
   logoutUser,
@@ -13,6 +14,7 @@ import {
   renderUpload,
   requireLogin,
   uploadFile,
+  uploadFileToFolder,
 } from "../controllers/indexController.js";
 import validateUser from "../validators/userValidator.js";
 import passport from "../config/passport.js";
@@ -51,5 +53,12 @@ indexRouter.get("/files/:id/download", requireLogin, downloadFile);
 indexRouter.get("/folders/new", requireLogin, renderNewFolderForm);
 indexRouter.post("/folders", requireLogin, folderValidator, createFolder);
 indexRouter.get("/folders/:id", requireLogin, renderFolderDetails);
+indexRouter.post(
+  "/folders/:id/upload",
+  requireLogin,
+  checkFolderOwnership,
+  upload.single("file"),
+  uploadFileToFolder,
+);
 
 export default indexRouter;
