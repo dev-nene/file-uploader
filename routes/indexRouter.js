@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   checkFolderOwnership,
   createFolder,
+  deleteFolder,
   downloadFile,
   editFolder,
   logoutUser,
@@ -74,6 +75,12 @@ indexRouter.post(
   checkFolderOwnership,
   folderValidator,
   editFolder,
+);
+indexRouter.post(
+  "/folders/:id/delete",
+  requireLogin,
+  checkFolderOwnership,
+  deleteFolder,
 );
 
 export default indexRouter;

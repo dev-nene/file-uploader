@@ -248,3 +248,19 @@ export async function editFolder(req, res) {
   });
   res.redirect(`/folders/${folderId}`);
 }
+
+export async function deleteFolder(req, res) {
+  const folderId = req.folder.id;
+
+  await prisma.$transaction([
+    prisma.file.updateMany({
+      where: { folderId: folderId },
+      data: { folderId: null },
+    }),
+    prisma.folder.delete({
+      where: { id: folderId },
+    }),
+  ]);
+
+  res.redirect("/");
+}
