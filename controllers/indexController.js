@@ -134,13 +134,15 @@ export async function downloadFile(req, res) {
 }
 
 export async function renderNewFolderForm(req, res) {
-  res.render("folder-form", { errors: [] });
+  res.render("folder-form", { errors: [], folder: {} });
 }
 
 export async function createFolder(req, res) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).render("folder-form", { errors: errors.array() });
+    return res
+      .status(400)
+      .render("folder-form", { errors: errors.array(), folder: {} });
   }
 
   const folderData = matchedData(req);
@@ -218,4 +220,31 @@ export async function uploadFileToFolder(req, res, next) {
   }
 
   return res.redirect(`/folders/${req.folder.id}`);
+}
+
+export async function renderFolderEdit(req, res) {
+  res.render("folder-form", { errors: [], folder: req.folder });
+}
+
+export async function editFolder(req, res) {
+  const folderId = Number(req.params.id);
+  if (!Number.isInteger(folderId) || folderId <= 0) {
+    return res.status(400).send("Invalid folder Id");
+  }
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).render("folder-form", {
+      errors: errors.array(),
+      folder: { ...req.folder, name: req.body.name },
+    });
+  }
+
+  const folderData = matchedData(req);
+
+  await prisma.folder.update({
+    where: { id: folderId },
+    data: { name: folderData.name },
+  });
+  res.redirect(`/folders/${folderId}`);
 }

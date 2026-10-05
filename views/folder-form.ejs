@@ -14,11 +14,11 @@
     <% } %>
 
 
-    <form action="/folders" method="POST">
+    <form action="<%= folder.id ? '/folders/' + folder.id + '/edit' : '/folders' %>" method="POST">
       <label for="name">Name</label>
-      <input type="text" name="name" id="name" required />
+      <input type="text" name="name" id="name" required value="<%=folder.name || '' %>" />
       <br />
-      <button>Create Folder</button>
+      <button><%= folder.id ? "Save changes" : "Create Folder" %></button>
     </form>
   </body>
 </html>

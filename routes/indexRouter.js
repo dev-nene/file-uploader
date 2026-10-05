@@ -3,10 +3,12 @@ import {
   checkFolderOwnership,
   createFolder,
   downloadFile,
+  editFolder,
   logoutUser,
   registerUser,
   renderFileDetails,
   renderFolderDetails,
+  renderFolderEdit,
   renderHomepage,
   renderLogin,
   renderNewFolderForm,
@@ -59,6 +61,19 @@ indexRouter.post(
   checkFolderOwnership,
   upload.single("file"),
   uploadFileToFolder,
+);
+indexRouter.get(
+  "/folders/:id/edit",
+  requireLogin,
+  checkFolderOwnership,
+  renderFolderEdit,
+);
+indexRouter.post(
+  "/folders/:id/edit",
+  requireLogin,
+  checkFolderOwnership,
+  folderValidator,
+  editFolder,
 );
 
 export default indexRouter;
