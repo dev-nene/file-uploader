@@ -1,0 +1,19 @@
+<html>
+  <head>
+    <title>Shared Folder</title>
+  </head>
+  
+  <body>
+    <h1><%= folder.name %></h1>
+    <p>Available until <%= share.expiresAt.toLocaleString() %></p>
+
+    <% for (const file of folder.files) { %>
+      <p>
+        <%= file.name %>
+        <a href="/share/<%= share.token %>/files/<%= file.id %>/download">
+          Download
+        </a>
+      </p>
+    <% } %>
+  </body>
+</html>

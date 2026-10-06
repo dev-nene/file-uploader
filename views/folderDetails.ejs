@@ -26,6 +26,13 @@
       <button>Delete</button>
     </form>
 
+    <form action="/folders/<%= folder.id %>/share" method="POST">
+      <label for="days">Share for how many days?</label>
+      <input type="number" name="days" id="days"
+            min="1" max="30" value="1" required />
+      <button>Create share link</button>
+    </form>
+
 
     <% if (folder.files.length === 0) { %> 
         <p>No files uploaded yet</p>

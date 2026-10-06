@@ -2,8 +2,10 @@ import { Router } from "express";
 import {
   checkFolderOwnership,
   createFolder,
+  createFolderShare,
   deleteFolder,
   downloadFile,
+  downloadSharedFile,
   editFolder,
   logoutUser,
   registerUser,
@@ -14,8 +16,10 @@ import {
   renderLogin,
   renderNewFolderForm,
   renderRegister,
+  renderSharedFolder,
   renderUpload,
   requireLogin,
+  requireValidShare,
   uploadFile,
   uploadFileToFolder,
 } from "../controllers/indexController.js";
@@ -81,6 +85,19 @@ indexRouter.post(
   requireLogin,
   checkFolderOwnership,
   deleteFolder,
+);
+
+indexRouter.post(
+  "/folders/:id/share",
+  requireLogin,
+  checkFolderOwnership,
+  createFolderShare,
+);
+indexRouter.get("/share/:token", requireValidShare, renderSharedFolder);
+indexRouter.get(
+  "/share/:token/files/:id/download",
+  requireValidShare,
+  downloadSharedFile,
 );
 
 export default indexRouter;

@@ -264,3 +264,75 @@ export async function deleteFolder(req, res) {
 
   res.redirect("/");
 }
+
+export async function createFolderShare(req, res) {
+  const days = Number(req.body.days);
+
+  if (!Number.isInteger(days) || days < 1 || days > 30) {
+    return res.status(400).send("Choose between 1 and 30 days");
+  }
+
+  const expiresAt = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
+
+  const share = await prisma.folderShare.create({
+    data: {
+      folderId: req.folder.id,
+      expiresAt,
+    },
+  });
+
+  res.render("share-created", { share });
+}
+
+export async function requireValidShare(req, res, next) {
+  const share = await prisma.folderShare.findUnique({
+    where: { token: req.params.token },
+  });
+
+  if (!share) {
+    return res.status(404).send("Share link does not exist");
+  }
+
+  if (share.expiresAt <= new Date()) {
+    return res.status(410).send("This share link has expired");
+  }
+
+  req.share = share;
+  next();
+}
+
+export async function renderSharedFolder(req, res) {
+  const folder = await prisma.folder.findUnique({
+    where: { id: req.share.folderId },
+    include: {
+      files: { orderBy: { uploadedAt: "desc" } },
+    },
+  });
+
+  if (!folder) {
+    return res.status(404).send("Folder does not exist");
+  }
+
+  res.render("shared-folder", { folder, share: req.share });
+}
+
+export async function downloadSharedFile(req, res) {
+  const fileId = Number(req.params.id);
+
+  if (!Number.isInteger(fileId) || fileId <= 0) {
+    return res.status(400).send("Invalid file ID");
+  }
+
+  const file = await prisma.file.findFirst({
+    where: {
+      id: fileId,
+      folderId: req.share.folderId,
+    },
+  });
+
+  if (!file) {
+    return res.status(404).send("File does not exist in this folder");
+  }
+
+  return res.download(file.path, file.name);
+}

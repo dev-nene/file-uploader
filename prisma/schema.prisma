@@ -41,10 +41,18 @@ model File {
 }
 
 model Folder {
-  id        Int      @id @default(autoincrement())
+  id        Int           @id @default(autoincrement())
   name      String
-  createdAt DateTime @default(now())
-  owner     User     @relation(fields: [ownerId], references: [id])
+  createdAt DateTime      @default(now())
+  owner     User          @relation(fields: [ownerId], references: [id])
   ownerId   Int
   files     File[]
+  shares    FolderShare[]
+}
+
+model FolderShare {
+  token     String   @id @default(uuid())
+  expiresAt DateTime
+  folderId  Int
+  folder    Folder   @relation(fields: [folderId], references: [id], onDelete: Cascade)
 }
